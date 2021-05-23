@@ -1,0 +1,41 @@
+{
+  "name": "stencil-windicss",
+  "version": "1.0.0",
+  "description": "A stencil plugin to transform windicss directives in your css file.",
+  "main": "dist/index.cjs.js",
+  "module": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "files": [
+    "dist/"
+  ],
+  "scripts": {
+    "build": "tsc & rollup -c"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/codeperate/stencil-windicss.git"
+  },
+  "keywords": [
+    "windicss",
+    "stencil",
+    "plugin"
+  ],
+  "author": "Codeperate Limited",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/codeperate/stencil-windicss/issues"
+  },
+  "homepage": "https://www.coedperate.com",
+  "dependencies": {
+    "windicss": "^3.0.9"
+  },
+  "peerDependencies": {
+    "@stencil/core": ">=2.3.0"
+  },
+  "devDependencies": {
+    "@stencil/core": "^2.3.0",
+    "np": "^7.5.0",
+    "rollup": "^2.49.0",
+    "typescript": "^4.2.4"
+  }
+}
