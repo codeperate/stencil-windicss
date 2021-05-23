@@ -1,5 +1,5 @@
 {
-  "name": "stencil-windicss",
+  "name": "@codeperate/stencil-windicss",
   "version": "0.0.1",
   "description": "A stencil plugin to transform windicss directives in your css file.",
   "main": "dist/index.cjs.js",
