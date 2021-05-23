@@ -26,7 +26,7 @@
   "bugs": {
     "url": "https://github.com/codeperate/stencil-windicss/issues"
   },
-  "homepage": "https://www.coedperate.com",
+  "homepage": "https://www.codeperate.com",
   "dependencies": {
     "windicss": "^3.0.9"
   },
