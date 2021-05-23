@@ -1,6 +1,6 @@
 {
   "name": "stencil-windicss",
-  "version": "1.0.0",
+  "version": "0.0.1",
   "description": "A stencil plugin to transform windicss directives in your css file.",
   "main": "dist/index.cjs.js",
   "module": "dist/index.js",
@@ -9,7 +9,8 @@
     "dist/"
   ],
   "scripts": {
-    "build": "tsc & rollup -c"
+    "build": "tsc & rollup -c",
+    "release": "np"
   },
   "repository": {
     "type": "git",
