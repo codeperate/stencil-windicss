@@ -83,6 +83,7 @@ export function windicssRollup(config): any {
         preflight: true,
         ...config
     }
+    let transformed=false;
     function build() {
         let outputStyle = Object.values(styleSheets)
             .reduce(
@@ -106,8 +107,14 @@ export function windicssRollup(config): any {
     }
     return {
         name: 'windicss-rollup',
-        buildStart: () => {
-            build()
-        }
+        transform() {
+            transformed = true;
+        },
+        generateBundle() {
+            if (transformed) {
+                build()
+                transformed=false;
+            }
+        },
     }
 }
