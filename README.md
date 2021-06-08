@@ -2,7 +2,7 @@
 This is a stencil plugin for you to use windicss in your stencil project.
 ## Important
 
-- Currently does not support attribute mode, compile mode and prefix.
+- Currently does not support attribute mode, compile mode, pre-flight and prefix.
 - This project is still in development. Take your own risk on production usage.
 
 ## Install
