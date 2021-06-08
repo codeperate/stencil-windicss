@@ -2,7 +2,7 @@ import { Processor } from 'windicss/lib';
 import { CSSParser } from 'windicss/utils/parser';
 import { Plugin } from '@stencil/core/internal';
 import { ClassName } from 'windicss/types/utils/parser/html';
-import { StyleSheet } from 'windicss/types/utils/style';
+import { StyleSheet } from 'windicss/utils/style';
 import { writeFile } from 'fs'
 export let styleSheets: { [key: string]: StyleSheet } = {};
 export let preflights: { [key: string]: StyleSheet } = {};
