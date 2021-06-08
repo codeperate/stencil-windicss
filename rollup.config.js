@@ -6,7 +6,9 @@ export default {
 
   external: [
     'windicss/lib',
-    'windicss/utils/parser'
+    'windicss/utils/parser',
+    'windicss/types/utils/style',
+    'fs'
   ],
 
   output: [{
