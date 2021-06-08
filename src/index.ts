@@ -35,7 +35,7 @@ export function JSXParser(str: string) {
 
     return output;
 };
-export function stencilWindicss(): Plugin[] {
+export function windicssStencil(): Plugin[] {
     return [
         {
             name: 'windicss-jsx-transpiler',
@@ -77,7 +77,7 @@ export interface RollupWindicssConfig {
     out: string,
     preflight: boolean
 }
-export function rollUpWindicss(config): any {
+export function windicssRollup(config): any {
     const _config: RollupWindicssConfig = {
         out: "src/global/windi.css",
         preflight: true,

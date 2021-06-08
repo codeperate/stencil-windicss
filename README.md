@@ -1,16 +1,29 @@
 # stencil-windicss
+This is a stencil plugin for you to use windicss in your stencil project.
+## Important
 
-This is a stencil plugin for ONLY transforming windicss directives in your css file. If you need On-demand CSS utilities,
-just use [rollup-plugin-windicss](https://github.com/windicss/vite-plugin-windicss/tree/main/packages/rollup-plugin-windicss)
-and [rollup-plugin-postcss](https://github.com/egoist/rollup-plugin-postcss) like below:
+- Currently does not support attribute mode, compile mode and prefix.
+- This project is still in development. Take your own risk on production usage.
+
+## Install
+
+```bash
+npm i @codeperate/stencil-windicss -D
 ```
-//stencil.config.ts
-export const config: Config = {
-    ...
-    rollupPlugins: {
-        after: [...WindiCSS({ transformCSS: false }), postcss()],
-    },
-    ...
-}
 
+```ts
+// stencil.config.ts
+import { windicssStencil, windicssRollup } from '@codeperate/stencil-windicss'
+
+export const config: Config = {
+    plugins: [
+        ...windicssStencil()
+    ],
+    rollupPlugins: {
+		after: [windicssRollup({
+            out: "src/global/windi.css", //These are the default values.
+            preflight: true
+        })],
+    },
+};
 ```
