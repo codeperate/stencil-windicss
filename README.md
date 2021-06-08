@@ -20,9 +20,9 @@ export const config: Config = {
         ...windicssStencil()
     ],
     rollupPlugins: {
-		after: [windicssRollup({
-            out: "src/global/windi.css", //These are the default values.
-            preflight: true
+	after: [
+	windicssRollup({
+            out: "src/global/windi.css" //These are the default values.
         })],
     },
 };
