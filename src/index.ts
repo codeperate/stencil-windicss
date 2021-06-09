@@ -1,11 +1,9 @@
 import { Processor } from 'windicss/lib';
-import { CSSParser } from 'windicss/utils/parser';
-import { Plugin } from '@stencil/core/internal';
 import { ClassName } from 'windicss/types/utils/parser/html';
+import { CSSParser } from 'windicss/utils/parser';
 import { StyleSheet } from 'windicss/utils/style';
-import { writeFile } from 'fs';
-import { Extractor } from 'windicss/types/interfaces';
 import { extname } from 'path';
+import { Extractor } from 'windicss/types/interfaces';
 export let styleSheets: { [key: string]: StyleSheet } = {};
 export function JSXParser(str: string) {
 	if (!str) return [];
@@ -38,10 +36,12 @@ export function JSXParser(str: string) {
 }
 export interface StencilWindicssConfig {
 	configFile: string;
+	out: string;
 }
-export function windicssStencil(config?: StencilWindicssConfig): Plugin[] {
+export function windicssStencil(config?: StencilWindicssConfig): any[] {
 	const _config: StencilWindicssConfig = {
 		configFile: './windi.config.js',
+		out: 'src/global/windi.css',
 		...config,
 	};
 	const processor = new Processor(require(_config.configFile));
@@ -101,6 +101,13 @@ export function windicssStencil(config?: StencilWindicssConfig): Plugin[] {
 				}
 				return { code: sourceText };
 			},
+			generateBundle() {
+				let outputStyle = Object.values(styleSheets)
+					.reduce((previousValue: StyleSheet, currentValue: StyleSheet) => previousValue.extend(currentValue), new StyleSheet())
+					.sort()
+					.combine();
+				this.emitFile({ type: 'asset', fileName: _config.out, source: outputStyle.build() });
+			},
 		},
 		{
 			name: 'windicss-css-transpiler',
@@ -111,34 +118,4 @@ export function windicssStencil(config?: StencilWindicssConfig): Plugin[] {
 			},
 		},
 	];
-}
-
-export interface RollupWindicssConfig {
-	out: string;
-}
-export function windicssRollup(config?: RollupWindicssConfig): any {
-	const _config: RollupWindicssConfig = {
-		out: 'src/global/windi.css',
-		...config,
-	};
-	let transformed = false;
-	function build() {
-		let outputStyle = Object.values(styleSheets)
-			.reduce((previousValue: StyleSheet, currentValue: StyleSheet) => previousValue.extend(currentValue), new StyleSheet())
-			.sort()
-			.combine();
-		writeFile(_config.out, outputStyle.build(), () => null);
-	}
-	return {
-		name: 'windicss-rollup',
-		transform() {
-			transformed = true;
-		},
-		generateBundle() {
-			if (transformed) {
-				build();
-				transformed = false;
-			}
-		},
-	};
 }
