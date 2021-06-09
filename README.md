@@ -19,13 +19,6 @@ npm i @codeperate/stencil-windicss -D
 import { windicssStencil, windicssRollup } from '@codeperate/stencil-windicss';
 
 export const config: Config = {
-	plugins: [...windicssStencil(configFile:'windi.config.js'})],
-	rollupPlugins: {
-		after: [
-			windicssRollup({
-				out: 'src/global/windi.css', //These are the default values.
-			}),
-		],
-	},
+	plugins: [...windicssStencil({ configFile: 'windi.config.js', out: 'src/global/windi.css' })],
 };
 ```
