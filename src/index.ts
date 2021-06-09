@@ -4,6 +4,8 @@ import { Plugin } from '@stencil/core/internal';
 import { ClassName } from 'windicss/types/utils/parser/html';
 import { StyleSheet } from 'windicss/utils/style';
 import { writeFile } from 'fs';
+import { Extractor } from 'windicss/types/interfaces';
+import { extname } from 'path';
 export let styleSheets: { [key: string]: StyleSheet } = {};
 export function JSXParser(str: string) {
 	if (!str) return [];
@@ -34,13 +36,40 @@ export function JSXParser(str: string) {
 
 	return output;
 }
-export function windicssStencil(): Plugin[] {
+export interface StencilWindicssConfig {
+	configFile: string;
+}
+export function windicssStencil(config?: StencilWindicssConfig): Plugin[] {
+	const _config: StencilWindicssConfig = {
+		configFile: './windi.config.js',
+		...config,
+	};
+	const processor = new Processor(require(_config.configFile));
+	const safelist = processor.config('safelist');
+	function buildSafeList(safelist: unknown) {
+		if (safelist) {
+			let classes: string[] = [];
+			if (typeof safelist === 'string') {
+				classes = safelist.split(/\s/).filter((i) => i);
+			}
+			if (Array.isArray(safelist)) {
+				for (const item of safelist) {
+					if (typeof item === 'string') {
+						classes.push(item);
+					} else if (Array.isArray(item)) {
+						classes = classes.concat(item);
+					}
+				}
+			}
+			styleSheets['safelist'] = processor.interpret(classes.join(' ')).styleSheet;
+		}
+	}
+	buildSafeList(safelist);
 	return [
 		{
 			name: 'windicss-jsx-transpiler',
 			transform(sourceText: string, filename: string) {
 				if (filename.indexOf('.tsx') != -1) {
-					let processor = new Processor();
 					let outputHTML = [],
 						outputStyle = [],
 						indexStart = 0;
@@ -52,6 +81,19 @@ export function windicssStencil(): Plugin[] {
 						outputHTML.push([...utility.success, ...utility.ignored].join(' '));
 						indexStart = p.end;
 					});
+					const extractors = processor.config('extract.extractors') as Extractor[] | undefined;
+					if (extractors) {
+						for (const { extractor, extensions } of extractors) {
+							if (extensions.includes(extname(filename).slice(1))) {
+								const result = extractor(sourceText);
+								if ('classes' in result && result.classes) {
+									const utility = processor.interpret(result.classes.join(' '), false);
+									styleSheets[filename] = styleSheets[filename] ? styleSheets[filename].extend(utility.styleSheet) : utility.styleSheet;
+									outputStyle.push(utility.styleSheet);
+								}
+							}
+						}
+					}
 					outputHTML.push(sourceText.substring(indexStart));
 					const added = outputStyle.reduce((previousValue: StyleSheet, currentValue: StyleSheet) => previousValue.extend(currentValue), new StyleSheet());
 					styleSheets[filename] = styleSheets[filename] ? styleSheets[filename].extend(added) : added;
@@ -64,13 +106,13 @@ export function windicssStencil(): Plugin[] {
 			name: 'windicss-css-transpiler',
 			pluginType: 'css',
 			transform(sourceText: string) {
-				const processor = new Processor();
 				const styleSheets = new CSSParser(sourceText, processor).parse();
 				return { code: styleSheets.build() };
 			},
 		},
 	];
 }
+
 export interface RollupWindicssConfig {
 	out: string;
 }
