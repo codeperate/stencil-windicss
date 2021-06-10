@@ -22,7 +22,7 @@ export const config: Config = {
 	plugins: [...windicssStencil({ configFile: 'windi.config.js', out: 'src/global/windi.css' })],
 };
 ```
-In your global stylesheet e.g.:src/global/app.css
+In your global stylesheet e.g. src/global/app.css
 ```css
 
 @import './windi.css';
