@@ -16,7 +16,7 @@ npm i @codeperate/stencil-windicss -D
 
 ```ts
 // stencil.config.ts
-import { windicssStencil, windicssRollup } from '@codeperate/stencil-windicss';
+import { windicssStencil } from '@codeperate/stencil-windicss';
 
 export const config: Config = {
 	plugins: [...windicssStencil({ configFile: 'windi.config.js', out: 'src/global/windi.css' })],
