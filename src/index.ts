@@ -1,9 +1,10 @@
-import { Processor } from 'windicss/lib';
+
 import { ClassName } from 'windicss/types/utils/parser/html';
 import { CSSParser } from 'windicss/utils/parser';
 import { StyleSheet } from 'windicss/utils/style';
 import { extname } from 'path';
 import { Extractor } from 'windicss/types/interfaces';
+import { Processor } from './processor'
 export let styleSheets: { [key: string]: StyleSheet } = {};
 export function JSXParser(str: string) {
 	if (!str) return [];
