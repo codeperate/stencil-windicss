@@ -8,7 +8,7 @@ export let styleSheets: { [key: string]: StyleSheet } = {};
 export function JSXParser(str: string) {
 	if (!str) return [];
 	const output: ClassName[] = [];
-	const regex = /class?\s*:\s*`[^]+`|class?\s*:\s*"[^"]+"|class?\s*:\s*'[^']+'|class?\s*:\s*[^>\s]+/gim;
+	const regex = /class?\s*:\s*`[^`]+`|class?\s*:\s*"[^"]+"|class?\s*:\s*'[^']+'/gim;
 	let match;
 	while ((match = regex.exec(str as string))) {
 		if (match) {
@@ -37,6 +37,7 @@ export function JSXParser(str: string) {
 export interface StencilWindicssConfig {
 	configFile?: string;
 	out?: string;
+	write?: string;
 }
 export function windicssStencil(config?: StencilWindicssConfig): any[] {
 	const _config: StencilWindicssConfig = {
