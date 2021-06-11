@@ -9,7 +9,8 @@ export default {
 		'windicss/utils/parser',
 		'windicss/utils/style',
 		'fs',
-		'path'
+		'path',
+		'windicss/utils'
 	],
 
 	output: [{

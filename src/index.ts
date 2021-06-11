@@ -1,4 +1,3 @@
-
 import { ClassName } from 'windicss/types/utils/parser/html';
 import { CSSParser } from 'windicss/utils/parser';
 import { StyleSheet } from 'windicss/utils/style';
@@ -6,6 +5,7 @@ import { extname, resolve } from 'path';
 import { Extractor } from 'windicss/types/interfaces';
 import { Processor } from './processor'
 export let styleSheets: { [key: string]: StyleSheet } = {};
+export let preflights: { [key: string]: StyleSheet } = {};
 export function JSXParser(str: string) {
 	if (!str) return [];
 	const output: ClassName[] = [];
@@ -38,12 +38,13 @@ export function JSXParser(str: string) {
 export interface StencilWindicssConfig {
 	configFile?: string;
 	out?: string;
-	write?: string;
+	preflight?: boolean;
 }
 export function windicssStencil(config?: StencilWindicssConfig): any[] {
 	const _config: StencilWindicssConfig = {
 		configFile: resolve('windi.config.js'),
 		out: 'windi.css',
+		preflight: false,
 		...config,
 	};
 	const processor = new Processor(require(_config.configFile));
@@ -99,6 +100,10 @@ export function windicssStencil(config?: StencilWindicssConfig): any[] {
 					outputHTML.push(sourceText.substring(indexStart));
 					const added = outputStyle.reduce((previousValue: StyleSheet, currentValue: StyleSheet) => previousValue.extend(currentValue), new StyleSheet());
 					styleSheets[filename] = styleSheets[filename] ? styleSheets[filename].extend(added) : added;
+					if (_config.preflight) {
+						const preflight = processor.preflight(sourceText, true, true, true)
+						preflights[filename] = preflights[filename] ? preflights[filename].extend(preflight) : preflight;
+					}
 					return { code: outputHTML.join('') };
 				}
 				return { code: sourceText };
@@ -108,6 +113,16 @@ export function windicssStencil(config?: StencilWindicssConfig): any[] {
 					.reduce((previousValue: StyleSheet, currentValue: StyleSheet) => previousValue.extend(currentValue), new StyleSheet())
 					.sort()
 					.combine();
+				if (_config.preflight)
+					outputStyle = Object.values(preflights)
+						.reduce(
+							(previousValue: StyleSheet, currentValue: StyleSheet) =>
+								previousValue.extend(currentValue),
+							new StyleSheet()
+						)
+						.sort()
+						.combine()
+						.extend(outputStyle);
 				this.emitFile({ type: 'asset', fileName: _config.out, source: outputStyle.build() });
 			},
 		},

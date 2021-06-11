@@ -1,6 +1,6 @@
 
 import { ThemeUtil } from 'windicss/types/interfaces';
-import { baseUtilities } from 'windicss/types/lib/utilities';
+import {preflights as baseUtilities} from './preflights';
 import { Style, Property, StyleSheet } from 'windicss/utils/style';
 import { Processor } from './processor';
 
@@ -14,7 +14,6 @@ export default function preflight(
   // Generate preflight style based on html tags.
   const globalSheet = new StyleSheet();
   const styleSheet = new StyleSheet();
-
   const createStyle = (
     selector: string | undefined,
     properties: {
@@ -37,7 +36,7 @@ export default function preflight(
   const tags = html ? Array.from(new Set(html.match(/h\("[^"]*"/g))).map((i) => i.replace(/h\(|"/g,"")) : undefined;
 
   // handle base style
-  includeBase && (processor.config('prefixer') ? baseUtilities : baseUtilities.filter(i => !i.selector || !/::?(webkit-input|-moz|-ms-input)-placeholder$/.test(i.selector))).forEach(p => {
+  includeBase && (processor.config('prefixer') ? baseUtilities  : baseUtilities.filter(i => !i.selector || !/::?(webkit-input|-moz|-ms-input)-placeholder$/.test(i.selector))).forEach(p => {
     if (includeGlobal && p.global) {
       // global style, such as * or html, body
       globalSheet.add(createStyle(p.selector, p.properties, true));
