@@ -2,14 +2,14 @@
 import { ClassName } from 'windicss/types/utils/parser/html';
 import { CSSParser } from 'windicss/utils/parser';
 import { StyleSheet } from 'windicss/utils/style';
-import { extname } from 'path';
+import { extname, resolve } from 'path';
 import { Extractor } from 'windicss/types/interfaces';
 import { Processor } from './processor'
 export let styleSheets: { [key: string]: StyleSheet } = {};
 export function JSXParser(str: string) {
 	if (!str) return [];
 	const output: ClassName[] = [];
-	const regex = /class?\s*:\s*`[^]+`|class?\s*:\s*"[^"]+"|class?\s*:\s*'[^']+'|class?\s*:\s*[^>\s]+/gim;
+	const regex = /class?\s*:\s*`[^`]+`|class?\s*:\s*"[^"]+"|class?\s*:\s*'[^']+'/gim;
 	let match;
 	while ((match = regex.exec(str as string))) {
 		if (match) {
@@ -36,13 +36,14 @@ export function JSXParser(str: string) {
 	return output;
 }
 export interface StencilWindicssConfig {
-	configFile: string;
-	out: string;
+	configFile?: string;
+	out?: string;
+	write?: string;
 }
 export function windicssStencil(config?: StencilWindicssConfig): any[] {
 	const _config: StencilWindicssConfig = {
-		configFile: './windi.config.js',
-		out: 'src/global/windi.css',
+		configFile: resolve('windi.config.js'),
+		out: 'windi.css',
 		...config,
 	};
 	const processor = new Processor(require(_config.configFile));
