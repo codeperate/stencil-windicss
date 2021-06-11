@@ -19,11 +19,12 @@ npm i @codeperate/stencil-windicss -D
 import { windicssStencil } from '@codeperate/stencil-windicss';
 
 export const config: Config = {
-	plugins: [...windicssStencil({ configFile: 'windi.config.js', out: 'src/global/windi.css' })],
+	plugins: [...windicssStencil({ configFile: 'windi.config.js', out: 'windi.css' })],
 };
 ```
-In your global stylesheet e.g. src/global/app.css
-```css
 
-@import './windi.css';
+In your html
+
+```html
+<link href="/build/windi.css" rel="stylesheet" />
 ```

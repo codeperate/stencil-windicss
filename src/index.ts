@@ -41,7 +41,7 @@ export interface StencilWindicssConfig {
 export function windicssStencil(config?: StencilWindicssConfig): any[] {
 	const _config: StencilWindicssConfig = {
 		configFile: resolve('/windi.config.js'),
-		out: resolve('src/global/windi.css'),
+		out: 'windi.css',
 		...config,
 	};
 	const processor = new Processor(require(_config.configFile));
