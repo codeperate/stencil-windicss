@@ -40,7 +40,7 @@ export interface StencilWindicssConfig {
 }
 export function windicssStencil(config?: StencilWindicssConfig): any[] {
 	const _config: StencilWindicssConfig = {
-		configFile: resolve('/windi.config.js'),
+		configFile: resolve('windi.config.js'),
 		out: 'windi.css',
 		...config,
 	};
