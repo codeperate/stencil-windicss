@@ -4,6 +4,7 @@ This is a stencil plugin for you to use windicss in your stencil project.
 
 ## Change Log
 
+- 2.1.1 support extract include and exclude
 - 2.1.0 added preflight mode
 
 ## Important
@@ -27,7 +28,7 @@ export const config: Config = {
 		...windicssStencil({
 			configFile: 'windi.config.js', //These are the default value
 			out: 'windi.css',
-			preflight:false
+			preflight: false,
 		}),
 	],
 };
