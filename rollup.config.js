@@ -10,7 +10,9 @@ export default {
 		'windicss/utils/style',
 		'fs',
 		'path',
-		'windicss/utils'
+		'windicss/utils',
+		'glob',
+		'minimatch'
 	],
 
 	output: [{

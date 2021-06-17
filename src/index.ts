@@ -3,7 +3,9 @@ import { CSSParser } from 'windicss/utils/parser';
 import { StyleSheet } from 'windicss/utils/style';
 import { extname, resolve } from 'path';
 import { Extractor } from 'windicss/types/interfaces';
-import { Processor } from './processor'
+import { Processor } from './processor';
+import { globArray } from './glob-array';
+import { readFileSync } from 'fs';
 export let styleSheets: { [key: string]: StyleSheet } = {};
 export let preflights: { [key: string]: StyleSheet } = {};
 export function JSXParser(str: string) {
@@ -67,7 +69,34 @@ export function windicssStencil(config?: StencilWindicssConfig): any[] {
 			styleSheets['safelist'] = processor.interpret(classes.join(' ')).styleSheet;
 		}
 	}
+	function interpret(files: string[]) {
+		files.forEach((file) => {
+			const content = readFileSync(file).toString();
+			let outputStyle = [];
+			JSXParser(content).forEach((p) => {
+				const utility = processor.interpret(p.result, false);
+				styleSheets[file] = styleSheets[file] ? styleSheets[file].extend(utility.styleSheet) : utility.styleSheet;
+				outputStyle.push(utility.styleSheet);
+			});
+			const extractors = processor.config('extract.extractors') as Extractor[] | undefined;
+			if (extractors) {
+				for (const { extractor, extensions } of extractors) {
+					if (extensions.includes(extname(file).slice(1))) {
+						const result = extractor(content);
+						if ('classes' in result && result.classes) {
+							const utility = processor.interpret(result.classes.join(' '), false);
+							styleSheets[file] = styleSheets[file] ? styleSheets[file].extend(utility.styleSheet) : utility.styleSheet;
+							outputStyle.push(utility.styleSheet);
+						}
+					}
+				}
+			}
+		});
+	}
 	buildSafeList(safelist);
+	const patterns = [].concat(processor.config('extract.include', []) as string[]).concat((processor.config('extract.exclude', []) as string[]).map((i) => '!' + i));
+	let matchFiles = globArray(patterns);
+	interpret(matchFiles);
 	return [
 		{
 			name: 'windicss-jsx-transpiler',
@@ -98,10 +127,8 @@ export function windicssStencil(config?: StencilWindicssConfig): any[] {
 						}
 					}
 					outputHTML.push(sourceText.substring(indexStart));
-					const added = outputStyle.reduce((previousValue: StyleSheet, currentValue: StyleSheet) => previousValue.extend(currentValue), new StyleSheet());
-					styleSheets[filename] = styleSheets[filename] ? styleSheets[filename].extend(added) : added;
 					if (_config.preflight) {
-						const preflight = processor.preflight(sourceText, true, true, true)
+						const preflight = processor.preflight(sourceText, true, true, true);
 						preflights[filename] = preflights[filename] ? preflights[filename].extend(preflight) : preflight;
 					}
 					return { code: outputHTML.join('') };
@@ -115,11 +142,7 @@ export function windicssStencil(config?: StencilWindicssConfig): any[] {
 					.combine();
 				if (_config.preflight)
 					outputStyle = Object.values(preflights)
-						.reduce(
-							(previousValue: StyleSheet, currentValue: StyleSheet) =>
-								previousValue.extend(currentValue),
-							new StyleSheet()
-						)
+						.reduce((previousValue: StyleSheet, currentValue: StyleSheet) => previousValue.extend(currentValue), new StyleSheet())
 						.sort()
 						.combine()
 						.extend(outputStyle);
