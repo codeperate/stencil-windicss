@@ -41,12 +41,14 @@ export interface StencilWindicssConfig {
 	configFile?: string;
 	out?: string;
 	preflight?: boolean;
+	rewriteClass?: boolean;
 }
 export function windicssStencil(config?: StencilWindicssConfig): any[] {
 	const _config: StencilWindicssConfig = {
 		configFile: resolve('windi.config.js'),
 		out: 'windi.css',
 		preflight: false,
+		rewriteClass: true,
 		...config,
 	};
 	const processor = new Processor(require(_config.configFile));
@@ -110,7 +112,8 @@ export function windicssStencil(config?: StencilWindicssConfig): any[] {
 						const utility = processor.interpret(p.result, false);
 						styleSheets[filename] = styleSheets[filename] ? styleSheets[filename].extend(utility.styleSheet) : utility.styleSheet; // Set third argument to false to hide comments;
 						outputStyle.push(utility.styleSheet);
-						outputHTML.push([...utility.success, ...utility.ignored].join(' '));
+						if (_config.rewriteClass) outputHTML.push([...utility.success, ...utility.ignored].join(' '));
+						else outputHTML.push(p.result);
 						indexStart = p.end;
 					});
 					const extractors = processor.config('extract.extractors') as Extractor[] | undefined;

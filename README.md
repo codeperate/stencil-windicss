@@ -4,6 +4,7 @@ This is a stencil plugin for you to use windicss in your stencil project.
 
 ## Change Log
 
+- 2.1.2 support rewriteClass config, disable this will not support grouping class variant e.g.(focused:(bg-red-600 border))
 - 2.1.1 support extract include and exclude
 - 2.1.0 added preflight mode
 
